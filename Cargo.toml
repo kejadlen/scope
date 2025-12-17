@@ -1,9 +1,19 @@
-[workspace]
-members = ["scope"]
-resolver = "2"
+[package]
+name = "dev-scope"
+version = "2024.2.93"
+edition = "2024"
+default-run = "scope"
+repository =  "https://github.com/oscope-dev/scope"
+license = "BSD-3-Clause"
+keywords = ["local-dev"]
+categories = ["command-line-utilities", "development-tools::debugging", "development-tools::build-utils"]
+description = "A tool to help diagnose errors, setup machines, and report bugs to authors."
+documentation = "https://oscope-dev.github.io/scope/"
+readme = "README.md"
+publish = true
 
-# Config for 'dist'
-[workspace.metadata.dist]
+[package.metadata.dist]
+dist = true
 # The preferred dist version to use in CI (Cargo.toml SemVer syntax)
 cargo-dist-version = "0.28.0"
 # CI backends to support
@@ -31,24 +41,17 @@ install-path = "CARGO_HOME"
 # Whether to install an updater program
 install-updater = false
 
-# The profile that 'cargo dist' will build with
-[profile.dist]
-inherits = "release"
-lto = "thin"
+[package.metadata.release]
+tag-prefix = ""
 
-[workspace.metadata.dist.github-custom-runners]
-global = "ubuntu-latest"
+# Example of customizing binaries in Cargo.toml.
+[[bin]]
+name = "scope"
 
-[workspace.metadata.dist.github-custom-runners.x86_64-unknown-linux-gnu]
-runner = "ubuntu-latest"
+[[bin]]
+name = "scope-intercept"
 
-[workspace.metadata.dist.github-custom-runners.x86_64-unknown-linux-musl]
-runner = "ubuntu-latest"
-
-[workspace.metadata.dist.github-custom-runners.aarch64-apple-darwin]
-runner = "macos-latest"
-
-[workspace.dependencies]
+[dependencies]
 clap = { version = "4.5.8", features = ["derive", "env"]}
 human-panic = "2.0.2"
 tokio = { version = "1", features = ["full"] }
@@ -61,7 +64,6 @@ tracing-subscriber = { version = "0.3", features = ["time", "json", "local-time"
 tracing-appender = "0.2.3"
 chrono = "0.4"
 nanoid = "0.4"
-directories = "5"
 derivative = "2"
 reqwest = { version = "0.12", features = ["multipart", "rustls-tls", "native-tls-vendored" ] }
 time = { version = "0.3", features = ["macros", "formatting", "local-offset"] }
@@ -104,3 +106,32 @@ gethostname = "0.4.3"
 normpath = "1.3.0"
 fake = "2.10.0"
 shellexpand = "3.1.0"
+
+[dev-dependencies]
+assert_cmd = "2.0.16"
+assert_fs = "1.1.2"
+escargot = "0.5.12"
+predicates = "3.1.2"
+tempfile = "3.0"
+
+[build-dependencies]
+vergen = { version = "8.3", features = ["build", "git", "git2"] }
+anyhow = "1.0.90"
+
+# Config for 'dist'
+[package.metadata.dist.github-custom-runners]
+global = "ubuntu-latest"
+
+[package.metadata.dist.github-custom-runners.x86_64-unknown-linux-gnu]
+runner = "ubuntu-latest"
+
+[package.metadata.dist.github-custom-runners.x86_64-unknown-linux-musl]
+runner = "ubuntu-latest"
+
+[package.metadata.dist.github-custom-runners.aarch64-apple-darwin]
+runner = "macos-latest"
+
+# The profile that 'cargo dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
